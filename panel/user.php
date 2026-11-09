@@ -28,6 +28,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             flash('error', $textbotlang['panel']['userMinAmountToman']);
         }
+    } elseif ($action === 'sub_balance') {
+        $amount = (int) ($_POST['amount'] ?? 0);
+        if ($amount < 1) {
+            flash('error', $textbotlang['panel']['userSubBalanceInvalid']);
+        } elseif (db_query($pdo, "UPDATE user SET Balance = Balance - ? WHERE id = ? AND Balance >= ?", [$amount, $id, $amount])->rowCount() === 1) {
+            flash('success', number_format($amount) . $textbotlang['panel']['userBalanceSubtractedSuffix']);
+            error_log("Admin {$_SESSION['admin_user']} lowered balance of user $id by $amount");
+        } else {
+            flash('error', $textbotlang['panel']['userSubBalanceTooMuch']);
+        }
     } elseif ($action === 'set_role') {
         $newRole = $_POST['new_role'] ?? 'f';
         if (in_array($newRole, ['f', 'n', 'n2', 'all'], true)) {
@@ -224,6 +234,9 @@ include __DIR__ . '/inc/layout_head.php';
             <div style="padding:12px;display:flex;flex-direction:column;gap:6px">
                 <button class="btn btn-primary btn-sm" style="justify-content:center" onclick="openModal('addModal')">
                     <?= icon('plus', 13) ?> <?= $textbotlang['panel']['userColAmount'] ?>
+                </button>
+                <button class="btn btn-ghost btn-sm" style="justify-content:center" onclick="openModal('subModal')">
+                    <?= icon('minus', 13) ?> <?= $textbotlang['panel']['userSubBalanceTitle'] ?>
                 </button>
                 <button class="btn btn-ghost btn-sm" style="justify-content:center" onclick="openModal('roleModal')">
                     <?= icon('users', 13) ?> <?= $textbotlang['panel']['userColMethod'] ?>
@@ -447,6 +460,30 @@ include __DIR__ . '/inc/layout_head.php';
 
         </div>
 
+    </div>
+</div>
+
+<div class="modal-veil" id="subModal">
+    <div class="modal">
+        <div class="modal-head">
+            <h3><?= $textbotlang['panel']['userSubBalanceTitle'] ?></h3>
+            <button class="modal-x" onclick="closeModal('subModal')"><?= icon('close', 14) ?></button>
+        </div>
+        <form method="POST">
+            <div class="modal-body">
+                <input type="hidden" name="_csrf" value="<?= csrf_token() ?>">
+                <input type="hidden" name="action" value="sub_balance">
+                <div class="field">
+                    <label><?= $textbotlang['panel']['userSubBalanceAmount'] ?></label>
+                    <input type="number" name="amount" class="input" min="1" max="<?= max(1, $balance) ?>" required>
+                    <span class="field-hint"><?= $textbotlang['panel']['userSubBalanceCurrent'] ?> <strong><?= number_format($balance) ?></strong></span>
+                </div>
+            </div>
+            <div class="modal-foot">
+                <button type="submit" class="btn btn-primary"><?= icon('minus', 13) ?> <?= $textbotlang['panel']['userSubBalanceTitle'] ?></button>
+                <button type="button" class="btn btn-ghost" onclick="closeModal('subModal')"><?= $textbotlang['panel']['userDetailDate'] ?></button>
+            </div>
+        </form>
     </div>
 </div>
 
