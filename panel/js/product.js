@@ -4,6 +4,7 @@ window.openEditModal = function (p) {
     document.getElementById('edit_price').value = p.price_product || '';
     document.getElementById('edit_volume').value = p.Volume_constraint || '';
     document.getElementById('edit_time').value = p.Service_time || '';
+    document.getElementById('edit_limitip').value = p.limitip_product || 0;
     document.getElementById('edit_cat').value = p.category || '';
     document.getElementById('edit_agent').value = p.agent || '';
     document.getElementById('edit_note').value = p.note || '';

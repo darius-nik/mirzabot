@@ -4487,6 +4487,7 @@ ID пользователя : %s
                 'productTomanUnit' => 'Отмена',
                 'productUnlimitedLabel' => 'Описание',
                 'productVolumeGbSuffix' => 'Объём (ГБ)',
+                'productLimitIpLabel' => 'Лимит IP (0 = без ограничений)',
                 'productZeroValue' => '۰',
                 'productsHeading' => 'Зарегистрированный продукт',
                 'productsSubtitle' => 'Список продуктов, доступных для продажи, и управление ими.',

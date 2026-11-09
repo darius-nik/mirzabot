@@ -19,7 +19,7 @@ class XuiSinglePanelDriver extends BasePanelDriver
         } else {
             $inbounds = $Get_Data_Panel['inbounds'];
         }
-        $data_Output = addClient($Get_Data_Panel, $usernameC, $expire, $subId, $data_limit, $inbounds, $Get_Data_Product['name_product'], $note);
+        $data_Output = addClient($Get_Data_Panel, $usernameC, $expire, $subId, $data_limit, $inbounds, $Get_Data_Product['name_product'], $note, (int) ($Get_Data_Product['limitip_product'] ?? 0));
         if (!empty($data_Output['error'])) {
             return array(
                 'status' => 'Unsuccessful',
@@ -139,6 +139,7 @@ class XuiSinglePanelDriver extends BasePanelDriver
             'data_limit' => $user_data['client']['totalGB'],
             'expire' => $expire,
             'expiry_time' => $user_data['client']['expiryTime'],
+            'limit_ip' => (int) ($user_data['client']['limitIp'] ?? 0),
             'online_at' => $used_data_3xui['obj']['lastOnline'],
             'used_traffic' => $used_data_3xui['obj']['up'] + $used_data_3xui['obj']['down'],
             'links' => $links_user,
@@ -230,6 +231,7 @@ class XuiSinglePanelDriver extends BasePanelDriver
             "email" => $username,
             "totalGB" => isset($config['totalGB']) ? $config['totalGB'] : $data_user['data_limit'],
             "expiryTime" => isset($config['expiryTime']) ? $config['expiryTime'] : $data_user['expiry_time'],
+            "limitIp" => isset($config['limitIp']) ? (int) $config['limitIp'] : (int) ($data_user['limit_ip'] ?? 0),
             "tgId" => 0,
             "enable" => isset($config['enable']) ? $config['enable'] : true,
         );

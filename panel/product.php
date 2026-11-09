@@ -20,8 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add')
   try {
     db_query(
       $pdo,
-      "INSERT INTO product (name_product,code_product,price_product,Volume_constraint,Service_time,Location,agent,data_limit_reset,note,category,hide_panel,one_buy_status) VALUES (?,?,?,?,?,?,?,'no_reset',?,?,'{}','0')",
-      [$name, $code, (int) ($_POST['price_product'] ?? 0), (int) ($_POST['volume_product'] ?? 0), (int) ($_POST['time_product'] ?? 0), $_POST['namepanel'] ?? '', $_POST['agent_product'] ?? '', $_POST['note_product'] ?? '', $_POST['category_product'] ?? '']
+      "INSERT INTO product (name_product,code_product,price_product,Volume_constraint,Service_time,Location,agent,data_limit_reset,note,category,hide_panel,one_buy_status,limitip_product) VALUES (?,?,?,?,?,?,?,'no_reset',?,?,'{}','0',?)",
+      [$name, $code, (int) ($_POST['price_product'] ?? 0), (int) ($_POST['volume_product'] ?? 0), (int) ($_POST['time_product'] ?? 0), $_POST['namepanel'] ?? '', $_POST['agent_product'] ?? '', $_POST['note_product'] ?? '', $_POST['category_product'] ?? '', max(0, (int) ($_POST['limitip_product'] ?? 0))]
     );
     db_query($pdo, "UPDATE product SET display_order = id WHERE id = ?", [$pdo->lastInsertId()]);
     flash('success', $textbotlang['panel']['productAddedPrefix'] . $name . $textbotlang['panel']['productAddedSuffix']);
@@ -41,8 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit'
       $pdo->beginTransaction();
       db_query(
         $pdo,
-        "UPDATE product SET name_product=?,price_product=?,Volume_constraint=?,Service_time=?,Location=?,agent=?,note=?,category=? WHERE id=?",
-        [$name, (int) ($_POST['price_product'] ?? 0), (int) ($_POST['volume_product'] ?? 0), (int) ($_POST['time_product'] ?? 0), $_POST['namepanel'] ?? '', $_POST['agent_product'] ?? '', $_POST['note_product'] ?? '', $_POST['category_product'] ?? '', $pid]
+        "UPDATE product SET name_product=?,price_product=?,Volume_constraint=?,Service_time=?,Location=?,agent=?,note=?,category=?,limitip_product=? WHERE id=?",
+        [$name, (int) ($_POST['price_product'] ?? 0), (int) ($_POST['volume_product'] ?? 0), (int) ($_POST['time_product'] ?? 0), $_POST['namepanel'] ?? '', $_POST['agent_product'] ?? '', $_POST['note_product'] ?? '', $_POST['category_product'] ?? '', max(0, (int) ($_POST['limitip_product'] ?? 0)), $pid]
       );
       if (isset($_POST['position'])) {
         move_display_order($pdo, 'product', $pid, (int) $_POST['position']);
@@ -191,6 +191,10 @@ include __DIR__ . '/inc/layout_head.php';
             <input type="number" name="time_product" class="input" placeholder="<?= htmlspecialchars($textbotlang['panel']['productThirtyValue']) ?>" min="0">
           </div>
           <div class="field">
+            <label><?= $textbotlang['panel']['productLimitIpLabel'] ?></label>
+            <input type="number" name="limitip_product" class="input" placeholder="0" min="0" value="0">
+          </div>
+          <div class="field">
             <label><?= $textbotlang['panel']['productFieldLocation'] ?></label>
             <select name="category_product" class="select">
               <option value=""><?= $textbotlang['panel']['productDetailLocation'] ?></option>
@@ -260,6 +264,10 @@ include __DIR__ . '/inc/layout_head.php';
           <div class="field">
             <label><?= $textbotlang['panel']['productDetailTime'] ?></label>
             <input type="number" name="time_product" id="edit_time" class="input" min="0">
+          </div>
+          <div class="field">
+            <label><?= $textbotlang['panel']['productLimitIpLabel'] ?></label>
+            <input type="number" name="limitip_product" id="edit_limitip" class="input" min="0">
           </div>
           <div class="field">
             <label><?= $textbotlang['panel']['productFieldPosition'] ?></label>

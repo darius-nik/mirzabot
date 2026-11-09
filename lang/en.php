@@ -4487,6 +4487,7 @@ We hope you had a good experience with the ease and speed of your service. If yo
                 'productTomanUnit' => 'Cancel',
                 'productUnlimitedLabel' => 'Description',
                 'productVolumeGbSuffix' => 'Volume (GB)',
+                'productLimitIpLabel' => 'IP limit (0 = unlimited)',
                 'productZeroValue' => '۰',
                 'productsHeading' => 'Registered product',
                 'productsSubtitle' => 'List of products available for sale and managing them.',
